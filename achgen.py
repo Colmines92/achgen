@@ -201,11 +201,7 @@ def saveFile(name,content,mode='stats'):
     if len(content) == 0:
         return
     
-    folder = '/'.join((maindir,achgen.appid))
     filename = '/'.join((folder,name))
-    
-    if not make_dir(folder):
-        return
     
     with open(filename, 'w', encoding='utf-8') as file:
         if mode == 'stats':
@@ -230,6 +226,7 @@ usage = '\n'.join(map(str, usage))
 
 def printUsage():
     print(usage)
+    input("")
     exit()
 
 if __name__ == "__main__":
@@ -251,13 +248,21 @@ if __name__ == "__main__":
     
     global filesFolder
     filesFolder = os.path.splitext(filename)[0] + '_files'
-
+    
     global achgen
     achgen = AchGen(filename,lang=lang)
-
+    
+    global folder
+    folder = '/'.join((maindir,achgen.appid))
+    
     achievements = achgen.getAchievements()
     stats = achgen.getStats()
     dlc = achgen.getDLC()
+
+    if not make_dir(folder):
+        exit()
+    
+    saveFile('steam_appid.txt', achgen.appid, 'text')
     
     if achievements:
         saveFile('achievements.json', achievements)

@@ -10,5 +10,7 @@ USAGE:
 
 You don't need both files.
 The .exe was made with C# .NET Framework 4.0
+
 The .py is for python
+
 Download the one you'll use.

@@ -221,7 +221,7 @@ usage = ["Achievements Generator",
         "\t3. Click on achievements, then download the page.",
         "\t4. Drag the downloaded html into the app executable icon and it will generate achievements.json",
         ""
-        "\t   Specify (or not) the desired language and wait for it to finish."]
+        "\t   Specify (or not) the desired language(only if online) and wait for it to finish."]
 usage = '\n'.join(map(str, usage))
 
 def printUsage():

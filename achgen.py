@@ -234,6 +234,10 @@ if __name__ == "__main__":
         printUsage()
     
     filename = sys.argv[1].replace('\\', '/')
+
+    if not os.path.isfile(filename):
+        printUsage()
+    
     lang = ""
     if len(sys.argv) > 2:
         lang = sys.argv[2].lower();
@@ -242,9 +246,6 @@ if __name__ == "__main__":
 
         if (lang == "english"):
             lang = ""
-
-    if not os.path.isfile(filename):
-        printUsage()
     
     global filesFolder
     filesFolder = os.path.splitext(filename)[0] + '_files'

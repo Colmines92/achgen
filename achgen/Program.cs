@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Web;
+using RestSharp.Extensions.MonoHttp;
 
 namespace SteamAchievementsGenerator
 {
@@ -325,7 +327,7 @@ Programmed by Colmines92
                         translation.Add(lang, ach);
                 }
 
-                var imgdir = $"{folder}/images";
+                var imgdir = $"{folder}/achievement_images";
 
                 if (!MakeDir(folder))
                     return achievements.ToArray();
@@ -346,7 +348,8 @@ Programmed by Colmines92
                     {
                         var text = split[1];
                         var displayName = text;
-                        var description = split[3].Trim();
+                        var text2 = split[3].Trim();
+                        var description = text2;
 
                         data.hidden = tds[1].SelectSingleNode(".//svg[@aria-hidden='true']") != null ? "1" : "0";
 
@@ -357,10 +360,10 @@ Programmed by Colmines92
                         {
                             if (displayName != "")
                                 if (!data.displayName.ContainsKey("english"))
-                                    data.displayName.Add("english", displayName);
+                                    data.displayName.Add("english", HttpUtility.HtmlDecode(displayName));
                             if (description != "")
                                 if (!data.description.ContainsKey("english"))
-                                    data.description.Add("english", description);
+                                    data.description.Add("english", HttpUtility.HtmlDecode(description));
                         }
                         else
                         {
@@ -380,20 +383,27 @@ Programmed by Colmines92
 
                                 if (displayName != "")
                                     if (!data.displayName.ContainsKey(lang))
-                                        data.displayName.Add(lang, displayName);
+                                        data.displayName.Add(lang, HttpUtility.HtmlDecode(displayName));
                                 if (description != "")
                                     if (!data.description.ContainsKey(lang))
-                                        data.description.Add(lang, description);
+                                        data.description.Add(lang, HttpUtility.HtmlDecode(description));
                             }
                         }
+
+                        string token = data.name;
+                        if (data.name.StartsWith("id_"))
+                            token = "NEW_ACHIEVEMENT_1_" + data.name.Substring(3);
+
+                        data.displayName.Add("token", token + "_NAME");
+                        data.description.Add("token", token + "_DESC");
                     }
 
                     var img = tds[2].SelectNodes(".//img");
                     var icon = img[0].GetAttributeValue("data-name", "");
                     var icongray = img[1].GetAttributeValue("data-name", "");
 
-                    data.icon = $"images/{icon}";
-                    data.icon_gray = $"images/{icongray}";
+                    data.icon = icon;
+                    data.icon_gray = icongray;
 
                     string src = "";
                     string dst = "";
